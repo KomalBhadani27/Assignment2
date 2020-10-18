@@ -25,7 +25,8 @@ def fetch_latest_videos(query):
     next_page_token = None
 
     while True:
-        results, next_page_token = __fetch_from_youtube_api(query, last_timestamp, next_page_token)
+        results, next_page_token = \
+            __fetch_from_youtube_api(query, last_timestamp, next_page_token)
         __add_results_to_db(results, query)
         if not next_page_token:
             break

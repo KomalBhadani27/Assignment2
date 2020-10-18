@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'latest_videos',
     'rest_framework',
+    'drf_multiple_model',
 ]
 
 MIDDLEWARE = [

@@ -37,4 +37,5 @@ class VideoByCategory(models.Model):
         verbose_name_plural = 'VideoByCategory'
 
     type_id = models.ForeignKey(VideoCategories, on_delete=models.CASCADE)
-    video_id = models.ForeignKey(LatestVideos, on_delete=models.CASCADE)
+    video_id = models.ForeignKey(LatestVideos, related_name='category', on_delete=models.CASCADE)
+
