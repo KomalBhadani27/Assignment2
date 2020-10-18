@@ -11,7 +11,7 @@ from .models import LatestVideos, VideoByCategory, VideoCategories
 
 API_KEY = os.environ.get('API_KEY')
 # Default timestamp if predefined query is encountered for the first time.
-DEFAULT_LAST_TIMESTAMP = '2020-10-01T00:00:00Z'
+DEFAULT_LAST_TIMESTAMP = '2020-10-18T00:00:00Z'
 
 
 @task(name="fetch_latest_videos")
@@ -22,9 +22,13 @@ def fetch_latest_videos(query):
     # Fetch the last time when the database was updated for given query.
     last_timestamp = __get_last_call_time(query)
 
-    results = __fetch_from_youtube_api(query, last_timestamp)
+    next_page_token = None
 
-    __add_results_to_db(results, query)
+    while True:
+        results, next_page_token = __fetch_from_youtube_api(query, last_timestamp, next_page_token)
+        __add_results_to_db(results, query)
+        if not next_page_token:
+            break
 
     return True
 
@@ -45,16 +49,17 @@ def __get_last_call_time(query):
     return DEFAULT_LAST_TIMESTAMP
 
 
-def __fetch_from_youtube_api(query, last_timestamp):
+def __fetch_from_youtube_api(query, last_timestamp, next_page_token):
     """This method requests youtube search api with given query"""
 
     youtube_object = build(serviceName='youtube', version='v3', developerKey=API_KEY)
 
     keyword = youtube_object.search().list(q=query,
+                                           pageToken=next_page_token,
                                            part="id, snippet",
                                            publishedAfter=last_timestamp,
                                            type='videos').execute()
-    return keyword.get("items", [])
+    return keyword.get("items", []), keyword.get("nextPageToken")
 
 
 def __add_results_to_db(results, query):
