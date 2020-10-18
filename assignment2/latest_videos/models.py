@@ -10,7 +10,7 @@ class LatestVideos(models.Model):
     class Meta:
         verbose_name_plural = 'LatestVideos'
 
-    video_id = models.CharField(max_length=100, primary_key=True)
+    id = models.CharField(max_length=100, primary_key=True)
     title = models.TextField()
     desc = models.TextField()
     published_at = models.DateTimeField()
@@ -25,7 +25,7 @@ class VideoCategories(models.Model):
     class Meta:
         verbose_name_plural = 'VideoCategories'
 
-    type = models.CharField(max_length=200)
+    id = models.CharField(max_length=200, primary_key=True)
     timestamp = models.DateTimeField()
 
 
