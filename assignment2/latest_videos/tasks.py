@@ -28,6 +28,7 @@ def fetch_latest_videos(query):
         results, next_page_token = \
             __fetch_from_youtube_api(query, last_timestamp, next_page_token)
         __add_results_to_db(results, query)
+        # Break if videos from last page is fetched
         if not next_page_token:
             break
 
@@ -37,6 +38,7 @@ def fetch_latest_videos(query):
 def __get_last_call_time(query):
     """Get last time when database was updated for this keyword"""
 
+    # Insert if this video type does not exists in table
     if VideoCategories.objects.filter(pk=str(query)).exists():
         vc = VideoCategories.objects.get(id=query)
         timestamp = vc.timestamp
@@ -64,6 +66,7 @@ def __fetch_from_youtube_api(query, last_timestamp, next_page_token):
 
 
 def __add_results_to_db(results, query):
+    """This method updates the result in the database"""
 
     type_id = VideoCategories.objects.get(id=query)
 
@@ -72,6 +75,7 @@ def __add_results_to_db(results, query):
         if 'videoId' not in result['id'].keys():
             continue
 
+        # Insert if this video id does not exists in table
         if not LatestVideos.objects.filter(pk=result['id']['videoId']).exists():
             videoId = LatestVideos.objects.create(
                 id=result['id']['videoId'],
@@ -83,6 +87,7 @@ def __add_results_to_db(results, query):
 
             videoId.save()
 
+        # Insert if this video and type relation does not exists in table
         if not VideoByCategory.objects.filter(type_id=type_id,
                                               video_id=LatestVideos(id=result['id']['videoId'])).exists():
             vbc = VideoByCategory.objects. \
@@ -91,6 +96,7 @@ def __add_results_to_db(results, query):
 
             vbc.save()
 
+    # Update the last call timestamp to current time for the query.
     vc = VideoCategories.objects.get(id=query)
     vc.timestamp = datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ")
     vc.save()

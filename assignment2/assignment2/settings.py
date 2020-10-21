@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'latest_videos',
     'rest_framework',
     'drf_multiple_model',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
