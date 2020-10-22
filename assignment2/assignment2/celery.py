@@ -19,7 +19,7 @@ def debug_task(self):
 app.conf.beat_schedule = {
     'fetch-periodically': {
         'task': 'fetch_latest_videos',
-        'schedule': 30.0,
+        'schedule': 60.0,
         'args': ('party',),
     }
 }

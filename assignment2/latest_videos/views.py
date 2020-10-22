@@ -2,7 +2,7 @@ from django.shortcuts import redirect, HttpResponse
 
 # Create your views here.
 
-from rest_framework import viewsets, generics, filters
+from rest_framework import viewsets, generics
 from rest_framework.response import Response
 from django.contrib.postgres.search import TrigramSimilarity
 

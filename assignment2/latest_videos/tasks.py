@@ -11,7 +11,7 @@ from .models import LatestVideos, VideoByCategory, VideoCategories
 
 API_KEY = os.environ.get('API_KEY')
 # Default timestamp if predefined query is encountered for the first time.
-DEFAULT_LAST_TIMESTAMP = '2020-10-18T00:00:00Z'
+DEFAULT_LAST_TIMESTAMP = '2020-10-22T15:00:00Z'
 
 
 @task(name="fetch_latest_videos")

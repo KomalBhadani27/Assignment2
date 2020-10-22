@@ -26,8 +26,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '172.28.1.4', '172.28.0.0']
 
 # Application definition
 
@@ -40,8 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'latest_videos',
     'rest_framework',
-    'drf_multiple_model',
-    'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -84,7 +81,7 @@ DATABASES = {
         'NAME': os.environ.get('POSTGRES_DATABASE'),
         'USER': os.environ.get('POSTGRES_USER'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
@@ -129,8 +126,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # CELERY STUFF
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'

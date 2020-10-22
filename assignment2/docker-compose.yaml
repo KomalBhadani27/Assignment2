@@ -1,0 +1,53 @@
+version: '2.1'
+services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    env_file:
+      - env.env
+    volumes:
+      - .:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -q -d $${POSTGRES_DATABASE} -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 20s
+      retries: 5
+  redis:
+    image: "redis:alpine"
+  web:
+    restart: always
+    build: .
+    command: bash -c "python3 manage.py makemigrations && python3 manage.py migrate --noinput && python3 manage.py runserver 0.0.0.0:8990"
+    volumes:
+      - .:/code
+    ports:
+      - "8990:8990"
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - env.env
+  celery:
+    build: .
+    command: bash -c "rm -rf celerybeat.pid && python3 manage.py makemigrations && python3 manage.py migrate --noinput && celery -A assignment2 worker -l info"
+    volumes:
+      - .:/code
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    env_file:
+      - env.env
+  celery-beat:
+    build: .
+    command: celery -A assignment2 beat -l info
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+      - redis
+      - celery
+    env_file:
+      - env.env
