@@ -89,8 +89,8 @@ Response:
 
 ```
 {
-    "next_link": "/videos?page=2&per_page=5",
-    "prev_link": "/videos?page=1&per_page=5",
+    "next_link": "/videos?query=party&page=2&per_page=5",
+    "prev_link": "/videos?query=party&page=1&per_page=5",
     "latest_videos": [
         {
             "id": "alrdGv60UIg",

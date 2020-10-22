@@ -23,6 +23,8 @@ class SearchVideosViewSet(generics.ListCreateAPIView):
     serializer_class = LatestVideoSerializer
     page = None
     per_page = None
+    #Default query
+    query = 'party'
 
     def get_queryset(self):
         """Overriding get_queryset method from parent class"""
@@ -45,6 +47,7 @@ class SearchVideosViewSet(generics.ListCreateAPIView):
             offset = (self.page - 1) * self.per_page
 
             if query:
+                self.query = query
                 queryset = LatestVideos.objects.annotate(
                     similarity=TrigramSimilarity('desc', str(query)),
                 ).filter(similarity__gt=0.05).order_by('-similarity') \
@@ -73,7 +76,7 @@ class SearchVideosViewSet(generics.ListCreateAPIView):
 
     def __get_links(self):
         # Helper links for pagination at frontend.
-        next_link = '/videos?page=' + str(self.page + 1) + '&per_page=' + str(self.per_page)
-        prev_link = '/videos?page=' + str(max(self.page - 1, 1)) + '&per_page=' + str(self.per_page)
+        next_link = '/videos?query=' + str(self.query) + 'page=' + str(self.page + 1) + '&per_page=' + str(self.per_page)
+        prev_link = '/videos?query=' + str(self.query) + 'page=' + str(max(self.page - 1, 1)) + '&per_page=' + str(self.per_page)
 
         return next_link, prev_link
